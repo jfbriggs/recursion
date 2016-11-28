@@ -13,20 +13,17 @@ var stringifyJSON = function(obj) {
     return '"' + obj + '"';
   } else if (typeof obj === 'number' || typeof obj === 'boolean') {
     return "" + obj;
+  } else if (typeof obj === 'object') {
+    if (Array.isArray(obj)) {
+      // code to recursively run through array objects
+    } else {
+      // code to recursively run through key/value pairs
+    }
   }
 };
 
 
-// {a: 1, b: 2, c: {z: 1, y: 3}, d: 4}
-
-// ==> "{"a":1,"b":2,"c":{"z":1,"y":3},"d":4}"
-
-var toString = function(element) {
-  if (typeof element === 'string' || typeof element === 'object' || typeof element === 'boolean' || typeof element === 'number') {
-    return "" + element + "";
-  }
-}
-
+// HYPOTHESIS / TEST / PSEUDO CODE
 
 function stringify(thing) {
   var result;
@@ -38,6 +35,11 @@ function stringify(thing) {
   }
 }
 
-// ['a', 'b', 'c', ['a', 'b', 3], 'd']
-['[', '"a"', '"b"', '"c"', "[3,1,3]", '"d"', ']']
+// ['a', 'b', 'c', [3, 1, 3], 'd']
 
+// JOIN -> ['[', '"a"', '"b"', '"c"', "[3,1,3]", '"d"', ']']
+// output: '["a","b","c","[3,1,3]","d"]'
+
+// {a: 1, b: 2, c: {z: 1, y: 3}, d: 4}
+
+// ==> "{"a":1,"b":2,"c":{"z":1,"y":3},"d":4}"
