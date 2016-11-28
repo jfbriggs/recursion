@@ -9,29 +9,50 @@ var stringifyJSON = function(obj, length) {
   // your code goes here
   if (obj === NaN || obj === null) {
     return "null";
+
   } else if (typeof obj === undefined || typeof obj === 'function') {
     return undefined;
+
   } else if (typeof obj === 'string') {
     return '"' + obj + '"';
+
   } else if (typeof obj === 'number' || typeof obj === 'boolean') {
     return "" + obj;
+
   } else if (typeof obj === 'object') {
     if (Array.isArray(obj)) {
-      // code for an array
+      // CODE FOR AN ARRAY
       var result = [];
       var stringifyArray = function(arr, i) {
         if (i === arr.length) {
           return;
         } else {
-          result.push(stringifyJSON(arr[i]));
+          var stringified = stringifyJSON(arr[i]);
+          if (stringified === undefined) {
+            result.push("null")
+          } else {
+            result.push(stringified);
+          }
           stringifyArray(arr, i + 1);
         }
       }
       stringifyArray(obj, 0);
       return "[" + result.join(",") + "]";
+
     } else {
-      // code for an object
-      var result = "";
+      // CODE FOR AN OBJECT
+      var result = [];
+      for (var key in obj) {
+        var prop = key;
+        if (typeof prop === 'number') {
+          prop = "" + prop;
+        }
+        var value = stringifyJSON(obj[key]);
+        if (value !== undefined) {
+          result.push('"' + prop + '"' + ':' + value);
+        }
+      }
+      return "{" + result.join(",") + "}";
     }
   }
 };
@@ -40,16 +61,6 @@ var stringifyJSON = function(obj, length) {
 /* ========================================
    HYPOTHESIS / EXPERIMENT / PSEUDO CODE
    ========================================
-
-
-
-function stringifyObject(obj) {
-  var result = ["{"];
-  run func that goes through all pairs, puts keys in quotes + ":" + value with no spaces, pushes each to array;
-  result.push("}");
-  return result.join(",")
-}
-
 
 FOR AN ARRAY:
 
@@ -61,7 +72,7 @@ FOR AN ARRAY:
 
 FOR AN OBJECT
 
-  {a: 1, b: 2, c: {z: 1, y: 3}, d: 4}
+  {a: 1, b: 2, c: {z: 1, y: 3, 4: 2}, 3: 4}
   ==> "{"a":1,"b":2,"c":{"z":1,"y":3},"d":4}"
 
   ** NO SPACES
