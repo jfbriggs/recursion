@@ -5,9 +5,11 @@
 
 // STEP 1: Figure out what type of element you're dealing with to begin with
 
-var stringifyJSON = function(obj) {
+var stringifyJSON = function(obj, length) {
   // your code goes here
-  if (typeof obj === undefined || typeof obj === 'function') {
+  if (obj === NaN || obj === null) {
+    return "null";
+  } else if (typeof obj === undefined || typeof obj === 'function') {
     return undefined;
   } else if (typeof obj === 'string') {
     return '"' + obj + '"';
@@ -15,31 +17,64 @@ var stringifyJSON = function(obj) {
     return "" + obj;
   } else if (typeof obj === 'object') {
     if (Array.isArray(obj)) {
-      // code to recursively run through array objects
+      // code for an array
+      var result = [];
+      var stringifyArray = function(arr, i) {
+        if (i === arr.length) {
+          return;
+        } else {
+          result.push(stringifyJSON(arr[i]));
+          stringifyArray(arr, i + 1);
+        }
+      }
+      stringifyArray(obj, 0);
+      return "[" + result.join(",") + "]";
     } else {
-      // code to recursively run through key/value pairs
+      // code for an object
+      var result = "";
     }
   }
 };
 
 
-// HYPOTHESIS / TEST / PSEUDO CODE
+/* ========================================
+   HYPOTHESIS / EXPERIMENT / PSEUDO CODE
+   ========================================
 
-function stringify(thing) {
-  var result;
-  if Array.isArray(thing) {
-    var result = ["["];
-    run function that pushes all remaining elements to result;
-    result.push("]");
-    return result.join(",");
-  }
+
+
+function stringifyObject(obj) {
+  var result = ["{"];
+  run func that goes through all pairs, puts keys in quotes + ":" + value with no spaces, pushes each to array;
+  result.push("}");
+  return result.join(",")
 }
 
-// ['a', 'b', 'c', [3, 1, 3], 'd']
 
-// JOIN -> ['[', '"a"', '"b"', '"c"', "[3,1,3]", '"d"', ']']
-// output: '["a","b","c","[3,1,3]","d"]'
+FOR AN ARRAY:
 
-// {a: 1, b: 2, c: {z: 1, y: 3}, d: 4}
+  ['a', 'b', 'c', [3, 1, 3], 'd']
 
-// ==> "{"a":1,"b":2,"c":{"z":1,"y":3},"d":4}"
+  JOIN -> ['[', '"a"', '"b"', '"c"', "[3,1,3]", '"d"', ']']
+  output: '["a","b","c","[3,1,3]","d"]'
+
+
+FOR AN OBJECT
+
+  {a: 1, b: 2, c: {z: 1, y: 3}, d: 4}
+  ==> "{"a":1,"b":2,"c":{"z":1,"y":3},"d":4}"
+
+  ** NO SPACES
+
+  IF A VALUE IS UNDEFINED, THAT KEY/VALUE PAIR IS OMITTED FROM THE STRINGIFIED OBJECT
+  {a: 3, b: undefined} ==> '{"a":3}'
+
+
+GENERAL HYPOTHESES:
+
+  1) An array as an element or value within an object/greater array will just return clumped together
+  2) An object as an element or value within another object/an array will return clumped with keys in quotes
+
+  {a: 1, b: 2} ==> ['{', '"a":1', '"b":2', '}']
+
+*/
